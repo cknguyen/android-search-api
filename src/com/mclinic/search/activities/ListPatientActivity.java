@@ -1,4 +1,25 @@
+/**
+ * Copyright 2012 Muzima Team
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.mclinic.search.activities;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -8,24 +29,13 @@ import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import com.burkeware.search.api.Context;
 import com.burkeware.search.api.RestAssuredService;
 import com.burkeware.search.api.util.StringUtil;
 import com.google.inject.Module;
-import com.nribeka.search.R;
 import com.mclinic.search.adapter.PatientAdapter;
 import com.mclinic.search.module.AndroidModule;
 import com.mclinic.search.sample.algorithm.CohortAlgorithm;
@@ -42,12 +52,8 @@ import com.mclinic.search.sample.resolver.PatientResolver;
 import com.mclinic.search.task.PatientLoaderTask;
 import com.mclinic.search.util.Constants;
 import com.mclinic.search.util.FileUtils;
+import com.nribeka.search.R;
 import junit.framework.Assert;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ListPatientActivity extends ListActivity {
 

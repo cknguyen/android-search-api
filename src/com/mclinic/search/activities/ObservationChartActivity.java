@@ -1,4 +1,23 @@
+/**
+ * Copyright 2012 Muzima Team
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.mclinic.search.activities;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -13,11 +32,11 @@ import android.widget.Toast;
 import com.burkeware.search.api.Context;
 import com.burkeware.search.api.RestAssuredService;
 import com.burkeware.search.api.util.StringUtil;
-import com.nribeka.search.R;
 import com.mclinic.search.sample.domain.Observation;
 import com.mclinic.search.sample.domain.Patient;
 import com.mclinic.search.util.Constants;
 import com.mclinic.search.util.FileUtils;
+import com.nribeka.search.R;
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
 import org.achartengine.chart.PointStyle;
@@ -25,9 +44,6 @@ import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ObservationChartActivity extends Activity {
 
@@ -78,7 +94,7 @@ public class ObservationChartActivity extends Activity {
     }
 
     private Patient getPatient(final String uuid) {
-        Patient patient =  null;
+        Patient patient = null;
         try {
             RestAssuredService service = Context.getService();
             patient = service.getObject("uuid:" + StringUtil.quote(uuid), Patient.class);
