@@ -30,6 +30,7 @@ public abstract class BaseOpenmrsAlgorithm extends BaseAlgorithm {
      */
     @Override
     public String serialize(final Searchable object) throws IOException {
-        throw new IOException("Create or updating OpenMRS object is disabled. Update them in the server, please!");
+        throw new IOException("Update and delete operation on OpenMRS object is disabled. " +
+                "Please perform the operation in the server!");
     }
 }
