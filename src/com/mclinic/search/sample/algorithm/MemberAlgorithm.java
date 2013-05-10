@@ -17,30 +17,30 @@ package com.mclinic.search.sample.algorithm;
 
 import com.jayway.jsonpath.JsonPath;
 import com.mclinic.search.api.model.object.Searchable;
-import com.mclinic.search.sample.domain.Cohort;
+import com.mclinic.search.sample.domain.Member;
 
 import java.io.IOException;
 
-public class CohortAlgorithm extends BaseOpenmrsAlgorithm {
+public class MemberAlgorithm extends BaseOpenmrsAlgorithm {
 
     /**
-     * Implementation of this method will define how the object will be serialized from the String representation.
+     * Implementation of this method will define how the patient will be serialized from the JSON representation.
      *
-     * @param json the string representation
-     * @return the concrete object
+     * @param serialized the json representation
+     * @return the concrete patient object
      */
     @Override
-    public Searchable deserialize(final String json) throws IOException {
-        Cohort cohort = new Cohort();
+    public Searchable deserialize(final String serialized) throws IOException {
+        Member member = new Member();
 
-        Object jsonObject = JsonPath.read(json, "$");
+        Object jsonObject = JsonPath.read(serialized, "$");
 
-        String uuid = JsonPath.read(jsonObject, "$['uuid']");
-        cohort.setUuid(uuid);
+        String cohortUuid = JsonPath.read(jsonObject, "$['cohort.uuid']");
+        member.setCohortUuid(cohortUuid);
 
-        String name = JsonPath.read(jsonObject, "$['name']");
-        cohort.setName(name);
+        String patientUuid = JsonPath.read(jsonObject, "$['patient.uuid']");
+        member.setPatientUuid(patientUuid);
 
-        return cohort;
+        return member;
     }
 }

@@ -13,18 +13,21 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.burkeware.search.api.RestAssuredService;
-import com.burkeware.search.api.util.StringUtil;
-import com.nribeka.search.R;
 import com.mclinic.search.adapter.ObservationAdapter;
+import com.mclinic.search.api.filter.Filter;
+import com.mclinic.search.api.filter.FilterFactory;
+import com.mclinic.search.api.service.RestAssuredService;
+import com.mclinic.search.module.ContextFactory;
 import com.mclinic.search.sample.domain.Observation;
 import com.mclinic.search.sample.domain.Patient;
 import com.mclinic.search.util.Constants;
 import com.mclinic.search.util.FileUtils;
+import com.nribeka.search.R;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ViewPatientActivity extends ListActivity {
@@ -56,13 +59,12 @@ public class ViewPatientActivity extends ListActivity {
         patientView.setBackgroundResource(R.drawable.search_gradient);
 
         TextView textView = (TextView) findViewById(R.id.identifier_text);
-        String[] identifierElements = patient.getIdentifier().split("=");
-        textView.setText(identifierElements[1].trim());
+        textView.setText(patient.getIdentifier());
 
         textView = (TextView) findViewById(R.id.name_text);
-        textView.setText(patient.getName());
+        textView.setText(patient.getGivenName() + " " + patient.getMiddleName() + " " + patient.getFamilyName());
 
-        DateFormat df = new SimpleDateFormat("MMM dd, yyyy");
+        DateFormat df = new SimpleDateFormat("dd/MMM/yyyy");
         textView = (TextView) findViewById(R.id.birthdate_text);
         textView.setText(df.format(patient.getBirthdate()));
 
@@ -77,21 +79,24 @@ public class ViewPatientActivity extends ListActivity {
     }
 
     private Patient getPatient(final String uuid) {
-        Patient patient =  null;
+        Patient patient = null;
         try {
-            RestAssuredService service = com.burkeware.search.api.Context.getService();
-            patient = service.getObject("uuid:" + StringUtil.quote(uuid), Patient.class);
+            com.mclinic.search.module.Context context = ContextFactory.createContext(getApplicationContext().getResources());
+            RestAssuredService service = context.getInstance(RestAssuredService.class);
+            patient = service.getObject(uuid, Patient.class);
         } catch (Exception e) {
             Log.e(this.getClass().getSimpleName(), "Exception when trying to load patient", e);
         }
         return patient;
     }
 
-    private void getAllObservations(final String uuid) {
+    private void getAllObservations(final String patientUuid) {
         List<Observation> objects = new ArrayList<Observation>();
         try {
-            RestAssuredService service = com.burkeware.search.api.Context.getService();
-            objects = service.getObjects("patient:" + StringUtil.quote(uuid), Observation.class);
+            com.mclinic.search.module.Context context = ContextFactory.createContext(getApplicationContext().getResources());
+            RestAssuredService service = context.getInstance(RestAssuredService.class);
+            Filter patientFilter = FilterFactory.createFilter("patientUuid", patientUuid);
+            objects = service.getObjects(Arrays.asList(patientFilter), Observation.class);
         } catch (Exception e) {
             Log.e(this.getClass().getSimpleName(), "Exception when trying to load patient", e);
         }
@@ -108,18 +113,18 @@ public class ViewPatientActivity extends ListActivity {
             Observation obs = (Observation) getListAdapter().getItem(position);
 
             Intent ip;
-            int dataType = obs.getDatatype();
+            int dataType = obs.getDataType();
             if (dataType == Constants.TYPE_INT || dataType == Constants.TYPE_FLOAT) {
                 ip = new Intent(getApplicationContext(), ObservationChartActivity.class);
                 ip.putExtra(Constants.KEY_PATIENT_ID, patient.getUuid());
-                ip.putExtra(Constants.KEY_OBSERVATION_FIELD_ID, obs.getFieldUuid());
-                ip.putExtra(Constants.KEY_OBSERVATION_FIELD_NAME, obs.getFieldName());
+                ip.putExtra(Constants.KEY_OBSERVATION_FIELD_ID, obs.getQuestionUuid());
+                ip.putExtra(Constants.KEY_OBSERVATION_FIELD_NAME, obs.getQuestionName());
                 startActivity(ip);
             } else {
                 ip = new Intent(getApplicationContext(), ObservationTimelineActivity.class);
                 ip.putExtra(Constants.KEY_PATIENT_ID, patient.getUuid());
-                ip.putExtra(Constants.KEY_OBSERVATION_FIELD_ID, obs.getFieldUuid());
-                ip.putExtra(Constants.KEY_OBSERVATION_FIELD_NAME, obs.getFieldName());
+                ip.putExtra(Constants.KEY_OBSERVATION_FIELD_ID, obs.getQuestionUuid());
+                ip.putExtra(Constants.KEY_OBSERVATION_FIELD_NAME, obs.getQuestionName());
                 startActivity(ip);
             }
         }

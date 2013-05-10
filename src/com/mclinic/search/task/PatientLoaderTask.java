@@ -14,26 +14,35 @@
 
 package com.mclinic.search.task;
 
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ProgressBar;
-import com.burkeware.search.api.Context;
-import com.burkeware.search.api.RestAssuredService;
-import com.burkeware.search.api.resource.Resource;
-import com.burkeware.search.api.util.StringUtil;
+import com.mclinic.search.api.context.ServiceContext;
+import com.mclinic.search.api.filter.Filter;
+import com.mclinic.search.api.filter.FilterFactory;
+import com.mclinic.search.api.resource.Resource;
+import com.mclinic.search.api.service.RestAssuredService;
+import com.mclinic.search.api.util.StringUtil;
+import com.mclinic.search.module.Context;
+import com.mclinic.search.module.ContextFactory;
 import com.mclinic.search.sample.domain.Cohort;
-import com.mclinic.search.sample.domain.Patient;
+import com.mclinic.search.sample.domain.Member;
 import org.apache.lucene.queryParser.ParseException;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 public class PatientLoaderTask extends AsyncTask<String, String, String> {
 
     private ProgressBar progressBar;
 
-    public PatientLoaderTask(final ProgressBar progressBar) {
+    private Resources resources;
+
+    public PatientLoaderTask(final ProgressBar progressBar, final Resources resources) {
         this.progressBar = progressBar;
+        this.resources = resources;
     }
 
     @Override
@@ -50,19 +59,31 @@ public class PatientLoaderTask extends AsyncTask<String, String, String> {
 
     @Override
     protected String doInBackground(String... strings) {
+        String username = strings[0];
+        String password = strings[1];
+        String server = strings[2];
 
+        Resource resource;
         try {
-            RestAssuredService service = Context.getService();
-            Resource resource = Context.getResource("Cohort Resource");
+            Context context = ContextFactory.createContext(resources);
+            context.configure(username, password, server);
+
+            ServiceContext serviceContext = context.getInstance(ServiceContext.class);
+            RestAssuredService service = context.getInstance(RestAssuredService.class);
+
+            resource = serviceContext.getResource("Search Cohort Resource");
             service.loadObjects(StringUtil.EMPTY, resource);
             List<Cohort> cohorts = service.getObjects(StringUtil.EMPTY, Cohort.class);
             for (Cohort cohort : cohorts) {
-                resource = Context.getResource("Cohort Member Resource");
+                resource = serviceContext.getResource("Local Member Resource");
                 service.loadObjects(cohort.getUuid(), resource);
-                List<Patient> patients = service.getObjects(StringUtil.EMPTY, Patient.class);
-                for (Patient patient : patients) {
-                    resource = Context.getResource("Observation Resource");
-                    service.loadObjects(patient.getUuid(), resource);
+                Filter filter = FilterFactory.createFilter("cohortUuid", cohort.getUuid());
+                List<Member> members = service.getObjects(Arrays.asList(filter), Member.class);
+                for (Member member : members) {
+                    resource = serviceContext.getResource("Uuid Patient Resource");
+                    service.loadObjects(member.getPatientUuid(), resource);
+                    resource = serviceContext.getResource("Search Observation Resource");
+                    service.loadObjects(member.getPatientUuid(), resource);
                 }
             }
         } catch (ParseException e) {

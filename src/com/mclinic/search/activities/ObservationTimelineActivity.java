@@ -1,7 +1,6 @@
 package com.mclinic.search.activities;
 
 import android.app.ListActivity;
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -10,16 +9,20 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.burkeware.search.api.RestAssuredService;
-import com.burkeware.search.api.util.StringUtil;
-import com.nribeka.search.R;
 import com.mclinic.search.adapter.EncounterAdapter;
+import com.mclinic.search.api.filter.Filter;
+import com.mclinic.search.api.filter.FilterFactory;
+import com.mclinic.search.api.service.RestAssuredService;
+import com.mclinic.search.module.Context;
+import com.mclinic.search.module.ContextFactory;
 import com.mclinic.search.sample.domain.Observation;
 import com.mclinic.search.sample.domain.Patient;
 import com.mclinic.search.util.Constants;
 import com.mclinic.search.util.FileUtils;
+import com.nribeka.search.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ObservationTimelineActivity extends ListActivity {
@@ -53,29 +56,31 @@ public class ObservationTimelineActivity extends ListActivity {
     }
 
     private Patient getPatient(final String uuid) {
-        Patient patient =  null;
+        Patient patient = null;
         try {
-            RestAssuredService service = com.burkeware.search.api.Context.getService();
-            patient = service.getObject("uuid:" + StringUtil.quote(uuid), Patient.class);
+            Context context = ContextFactory.createContext(getApplicationContext().getResources());
+            RestAssuredService service = context.getInstance(RestAssuredService.class);
+            patient = service.getObject(uuid, Patient.class);
         } catch (Exception e) {
             Log.e(this.getClass().getSimpleName(), "Exception when trying to load patient", e);
         }
         return patient;
     }
 
-    private void getObservations(final String uuid, final String fieldUuid) {
-        List<Observation> objects = new ArrayList<Observation>();
+    private void getObservations(final String patientUuid, final String conceptUuid) {
+        List<Observation> observations = new ArrayList<Observation>();
         try {
-            RestAssuredService service = com.burkeware.search.api.Context.getService();
-            objects =
-                    service.getObjects(
-                            "patient:" + StringUtil.quote(uuid) + " AND concept:" + StringUtil.quote(fieldUuid),
-                            Observation.class);
+            Context context = ContextFactory.createContext(getApplicationContext().getResources());
+            RestAssuredService service = context.getInstance(RestAssuredService.class);
+            Filter patientFilter = FilterFactory.createFilter("patientUuid", patientUuid);
+            Filter conceptFilter = FilterFactory.createFilter("conceptUuid", conceptUuid);
+            observations = service.getObjects(
+                    Arrays.asList(patientFilter, conceptFilter), Observation.class);
         } catch (Exception e) {
             Log.e(this.getClass().getSimpleName(), "Exception when trying to load patient", e);
         }
 
-        observations.addAll(objects);
+        observations.addAll(observations);
         ArrayAdapter<Observation> observationAdapter = new EncounterAdapter(this, R.layout.encounter_list_item, observations);
         setListAdapter(observationAdapter);
     }
@@ -106,7 +111,7 @@ public class ObservationTimelineActivity extends ListActivity {
     }
 
     private void showCustomToast(String message) {
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(android.content.Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.toast_view, null);
 
         // set the text in the view

@@ -28,7 +28,7 @@ the License.
     <string name="create_patient">Create Patient</string>
     <string name="default_info">https://github.com/nribeka</string>
     <string name="default_password">test</string>
-    <string name="default_server">http://192.168.142.17:8081/openmrs-standalone</string>
+    <string name="default_server">http://140.182.15.145:8081/openmrs-standalone</string>
     <string name="default_username">admin</string>
     <string name="download">Download</string>
     <string name="download_forms">Refresh Forms</string>
@@ -50,7 +50,7 @@ the License.
     <string name="no_select_error">Sorry, you have not selected any patients!</string>
     <string name="no_upload_patients">No forms to upload!</string>
     <string name="odk">Open Data Kit</string>
-    <string name="form_find_error">Error: Try getting forms.</string>    
+    <string name="form_find_error">Error: Try getting forms.</string>
     <string name="odk_collect_error">Error: ODK Collect not installed.</string>
     <string name="openmrs">OpenMRS</string>
     <string name="password">Password</string>

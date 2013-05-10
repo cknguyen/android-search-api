@@ -6,15 +6,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import com.nribeka.search.R;
 import com.mclinic.search.sample.domain.Observation;
+import com.nribeka.search.R;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class EncounterAdapter extends ArrayAdapter<Observation> {
 
-    private SimpleDateFormat mDateFormat = new SimpleDateFormat("MMM dd, yyyy");
+    private SimpleDateFormat mDateFormat = new SimpleDateFormat("dd/MMM/yyyy");
 
     public EncounterAdapter(Context context, int textViewResourceId, List<Observation> items) {
         super(context, textViewResourceId, items);
@@ -31,7 +31,7 @@ public class EncounterAdapter extends ArrayAdapter<Observation> {
         if (obs != null) {
 
             TextView textView = (TextView) v.findViewById(R.id.value_text);
-            textView.setText(obs.getValueText());
+            textView.setText(obs.getValue());
 
             textView = (TextView) v.findViewById(R.id.encounterdate_text);
             textView.setText(mDateFormat.format(obs.getObservationDate()));

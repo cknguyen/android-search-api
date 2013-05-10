@@ -21,31 +21,17 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.burkeware.search.api.Context;
-import com.burkeware.search.api.RestAssuredService;
-import com.burkeware.search.api.util.StringUtil;
-import com.google.inject.Module;
-import com.nribeka.search.R;
 import com.mclinic.search.adapter.PatientAdapter;
-import com.mclinic.search.module.AndroidModule;
-import com.mclinic.search.sample.algorithm.CohortAlgorithm;
-import com.mclinic.search.sample.algorithm.CohortMemberAlgorithm;
-import com.mclinic.search.sample.algorithm.ObservationAlgorithm;
-import com.mclinic.search.sample.algorithm.PatientAlgorithm;
-import com.mclinic.search.sample.domain.Cohort;
-import com.mclinic.search.sample.domain.Observation;
+import com.mclinic.search.api.service.RestAssuredService;
+import com.mclinic.search.api.util.StringUtil;
+import com.mclinic.search.module.Context;
+import com.mclinic.search.module.ContextFactory;
 import com.mclinic.search.sample.domain.Patient;
-import com.mclinic.search.sample.resolver.CohortMemberResolver;
-import com.mclinic.search.sample.resolver.CohortResolver;
-import com.mclinic.search.sample.resolver.ObservationResolver;
-import com.mclinic.search.sample.resolver.PatientResolver;
 import com.mclinic.search.task.PatientLoaderTask;
 import com.mclinic.search.util.Constants;
 import com.mclinic.search.util.FileUtils;
-import junit.framework.Assert;
+import com.nribeka.search.R;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,50 +97,20 @@ public class ListPatientActivity extends ListActivity {
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         progressBar.setVisibility(ProgressBar.INVISIBLE);
 
-        Button loadConfiguration = (Button) findViewById(R.id.load_configuration);
-        loadConfiguration.setOnClickListener(new OnClickListener() {
-
-
-            @SuppressWarnings("unchecked")
-            public void onClick(View v) {
-
-                try {
-                    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-                    String server = settings.getString(
-                            PreferencesActivity.KEY_SERVER, getString(R.string.default_server));
-                    String username = settings.getString(
-                            PreferencesActivity.KEY_USERNAME, getString(R.string.default_username));
-                    String password = settings.getString(
-                            PreferencesActivity.KEY_PASSWORD, getString(R.string.default_password));
-
-                    Module androidModule = new AndroidModule(server, username, password);
-                    Context.initialize(androidModule);
-
-                    Context.registerObject(Cohort.class, Patient.class, Observation.class);
-                    Context.registerAlgorithm(
-                            CohortAlgorithm.class, CohortMemberAlgorithm.class,
-                            PatientAlgorithm.class, ObservationAlgorithm.class);
-                    Context.registerResolver(
-                            CohortResolver.class, CohortMemberResolver.class,
-                            PatientResolver.class, ObservationResolver.class);
-
-                    Context.registerResources(new File("/mnt/sdcard/j2l"));
-
-                    Assert.assertNotNull(Context.getResource("Cohort Resource"));
-
-                    getPatients();
-                } catch (IOException e) {
-                    Log.e(this.getClass().getSimpleName(), "IOException when trying to load patient", e);
-                }
-            }
-        });
-
         Button downloadButton = (Button) findViewById(R.id.download_patients);
         downloadButton.setOnClickListener(new OnClickListener() {
 
             public void onClick(View v) {
-                PatientLoaderTask patientLoaderTask = new PatientLoaderTask(progressBar);
-                patientLoaderTask.execute("Executing Download Patient");
+                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                String server = settings.getString(
+                        PreferencesActivity.KEY_SERVER, getString(R.string.default_server));
+                String username = settings.getString(
+                        PreferencesActivity.KEY_USERNAME, getString(R.string.default_username));
+                String password = settings.getString(
+                        PreferencesActivity.KEY_PASSWORD, getString(R.string.default_password));
+                PatientLoaderTask patientLoaderTask = new PatientLoaderTask(
+                        progressBar, getApplicationContext().getResources());
+                patientLoaderTask.execute(username, password, server);
             }
         });
     }
@@ -219,11 +175,13 @@ public class ListPatientActivity extends ListActivity {
 
         List<Patient> objects = new ArrayList<Patient>();
         try {
-            RestAssuredService service = Context.getService();
+            Context context = ContextFactory.createContext(getApplicationContext().getResources());
+            RestAssuredService service = context.getInstance(RestAssuredService.class);
 
-            String param = searchStr;
-            if (!StringUtil.isEmpty(param))
-                param = param + "*";
+            String param = StringUtil.EMPTY;
+            if (!StringUtil.isEmpty(searchStr)) {
+                param = "givenName:" + searchStr + "* OR middleName:" + searchStr + "* OR familyName:" + searchStr + "*";
+            }
 
             objects = service.getObjects(param, Patient.class);
         } catch (Exception e) {

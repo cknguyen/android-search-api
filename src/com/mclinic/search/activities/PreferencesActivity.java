@@ -16,10 +16,6 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
 
     public static String KEY_PASSWORD = "password";
 
-    public static String KEY_SAVED_SEARCH = "saved_search";
-
-    public static String KEY_PROVIDER = "provider";
-
     public static String KEY_FIRST_RUN = "firstRun";
 
     public static String KEY_INFO = "info";
@@ -37,8 +33,6 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         updateServer();
         updateUsername();
         updatePassword();
-        updateSavedSearch();
-        updateProvider();
     }
 
     @Override
@@ -60,10 +54,6 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
             updateUsername();
         } else if (key.equals(KEY_PASSWORD)) {
             updatePassword();
-        } else if (key.equals(KEY_SAVED_SEARCH)) {
-            updateSavedSearch();
-        } else if (key.equals(KEY_PROVIDER)) {
-            updateProvider();
         }
     }
 
@@ -85,15 +75,5 @@ public class PreferencesActivity extends PreferenceActivity implements OnSharedP
         EditTextPreference etp = (EditTextPreference) this.getPreferenceScreen().findPreference(KEY_PASSWORD);
         etp.setSummary(etp.getText().replaceAll(".", "*"));
 
-    }
-
-    private void updateSavedSearch() {
-        EditTextPreference etp = (EditTextPreference) this.getPreferenceScreen().findPreference(KEY_SAVED_SEARCH);
-        etp.setSummary(etp.getText());
-    }
-
-    private void updateProvider() {
-        EditTextPreference etp = (EditTextPreference) this.getPreferenceScreen().findPreference(KEY_PROVIDER);
-        etp.setSummary(etp.getText());
     }
 }

@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.nribeka.search.R;
 import com.mclinic.search.sample.domain.Patient;
+import com.nribeka.search.R;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -31,11 +31,10 @@ public class PatientAdapter extends ArrayAdapter<Patient> {
         Patient patient = getItem(position);
         if (patient != null) {
             TextView textView = (TextView) view.findViewById(R.id.identifier_text);
-            String[] identifierElements = patient.getIdentifier().split("=");
-            textView.setText(identifierElements[1].trim());
+            textView.setText(patient.getIdentifier());
 
             textView = (TextView) view.findViewById(R.id.name_text);
-            textView.setText(patient.getName());
+            textView.setText(patient.getGivenName() + " " + patient.getMiddleName() + " " + patient.getFamilyName());
 
             DateFormat format = new SimpleDateFormat("dd/MMM/yyyy");
             textView = (TextView) view.findViewById(R.id.birthdate_text);
