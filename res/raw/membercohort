@@ -4,7 +4,7 @@ node.root=$.results
 resource.object=com.mclinic.search.sample.domain.Member
 algorithm.class=com.mclinic.search.sample.algorithm.MemberAlgorithm
 resolver.class=com.mclinic.search.sample.resolver.MemberCohortResolver
-field.unique=uri
+field.unique=
 
 # Searchable Fields
 cohortUuid=$['cohort.uuid']
