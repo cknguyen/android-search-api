@@ -77,12 +77,12 @@ public class Context {
         // * Read each line and use Class.getResourceAsStream(path to j2l) and then register each of them.
         try {
             ServiceContext serviceContext = injector.getInstance(ServiceContext.class);
-            initServiceContext(serviceContext, resources.openRawResource(R.raw.membercohort));
+            initServiceContext(serviceContext, resources.openRawResource(R.raw.cohortmember));
             initServiceContext(serviceContext, resources.openRawResource(R.raw.searchcohort));
             initServiceContext(serviceContext, resources.openRawResource(R.raw.searchobservation));
             initServiceContext(serviceContext, resources.openRawResource(R.raw.uuidpatient));
 
-            serviceContext.registerResource(resources.openRawResource(R.raw.membercohort));
+            serviceContext.registerResource(resources.openRawResource(R.raw.cohortmember));
             serviceContext.registerResource(resources.openRawResource(R.raw.searchcohort));
             serviceContext.registerResource(resources.openRawResource(R.raw.searchobservation));
             serviceContext.registerResource(resources.openRawResource(R.raw.uuidpatient));
