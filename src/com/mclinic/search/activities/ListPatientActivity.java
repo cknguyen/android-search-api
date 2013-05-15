@@ -1,4 +1,4 @@
-package com.mclinic.search.activities;
+
 
 import android.app.ListActivity;
 import android.content.Intent;
