@@ -13,10 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mclinic.search.sample.resolver;
 
-public class CohortMemberResolver extends AbstractResolver {
+import com.mclinic.search.api.util.StringUtil;
+
+import java.io.IOException;
+
+public class SearchCohortResolver extends BaseOpenmrsResolver {
+
+    private static final String configuration = "?v=custom:(uuid,name)";
 
     /**
      * Return the full REST resource based on the search string passed to the method.
@@ -25,7 +30,10 @@ public class CohortMemberResolver extends AbstractResolver {
      * @return full URI to the REST resource
      */
     @Override
-    public String resolve(final String searchString) {
-        return getServer() + "/ws/rest/v1/cohort/" + searchString + "/member?v=full";
+    public String resolve(final String searchString) throws IOException {
+        String param = StringUtil.EMPTY;
+        if (!StringUtil.isEmpty(searchString))
+            param = "&q=" + searchString;
+        return getConfiguration().getServer() + "/ws/rest/v1/cohort" + configuration + param;
     }
 }

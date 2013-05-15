@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mclinic.search.sample.resolver;
 
-import com.burkeware.search.api.util.StringUtil;
+import java.io.IOException;
 
-public class ObservationResolver extends AbstractResolver {
+public class MemberCohortResolver extends BaseOpenmrsResolver {
+
+    private static final String configuration = "?v=custom:(cohort.uuid,patient.uuid)";
 
     /**
      * Return the full REST resource based on the search string passed to the method.
@@ -27,10 +28,7 @@ public class ObservationResolver extends AbstractResolver {
      * @return full URI to the REST resource
      */
     @Override
-    public String resolve(final String searchString) {
-        String param = StringUtil.EMPTY;
-        if (!StringUtil.isEmpty(searchString))
-            param = param + "?patient=" + searchString;
-        return getServer() + "/ws/rest/v1/obs" + param;
+    public String resolve(final String searchString) throws IOException {
+        return getConfiguration().getServer() + "/ws/rest/v1/cohort/" + searchString + "/member" + configuration;
     }
 }

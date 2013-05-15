@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@android:style/Widget.ProgressBar.Inverse"
-                android:layout_marginRight="5dp" />
+                android:layout_marginRight="5dp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -78,16 +78,6 @@
                 android:text="@string/download_patients"
                 android:textSize="16dp"/>
 
-        <Button
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/load_configuration"
-                android:layout_gravity="bottom"
-                android:layout_weight="1"
-                android:minHeight="90px"
-                android:padding="12dp"
-                android:text="@string/load_configuration"
-                android:textSize="16dp"/>
     </LinearLayout>
 
 </LinearLayout>

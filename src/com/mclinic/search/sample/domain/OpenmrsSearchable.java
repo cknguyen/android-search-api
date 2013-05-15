@@ -16,5 +16,29 @@
 
 package com.mclinic.search.sample.domain;
 
-public class Billing {
+import com.mclinic.search.api.model.object.BaseSearchable;
+
+/**
+ */
+public abstract class OpenmrsSearchable extends BaseSearchable {
+
+    private String uri;
+
+    /**
+     * Get the openmrs object's uri.
+     *
+     * @return the uri;
+     */
+    public String getUri() {
+        return uri;
+    }
+
+    /**
+     * Set the openmrs object's uri.
+     *
+     * @param uri the uri.
+     */
+    public void setUri(final String uri) {
+        this.uri = uri;
+    }
 }

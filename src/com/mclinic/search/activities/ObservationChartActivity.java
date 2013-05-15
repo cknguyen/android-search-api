@@ -1,23 +1,4 @@
-/**
- * Copyright 2012 Muzima Team
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.mclinic.search.activities;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -29,9 +10,11 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.burkeware.search.api.Context;
-import com.burkeware.search.api.RestAssuredService;
-import com.burkeware.search.api.util.StringUtil;
+import com.mclinic.search.api.filter.Filter;
+import com.mclinic.search.api.filter.FilterFactory;
+import com.mclinic.search.api.service.RestAssuredService;
+import com.mclinic.search.module.Context;
+import com.mclinic.search.module.ContextFactory;
 import com.mclinic.search.sample.domain.Observation;
 import com.mclinic.search.sample.domain.Patient;
 import com.mclinic.search.util.Constants;
@@ -44,6 +27,10 @@ import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ObservationChartActivity extends Activity {
 
@@ -96,23 +83,25 @@ public class ObservationChartActivity extends Activity {
     private Patient getPatient(final String uuid) {
         Patient patient = null;
         try {
-            RestAssuredService service = Context.getService();
-            patient = service.getObject("uuid:" + StringUtil.quote(uuid), Patient.class);
+            Context context = ContextFactory.createContext(getApplicationContext().getResources());
+            RestAssuredService service = context.getInstance(RestAssuredService.class);
+            patient = service.getObject(uuid, Patient.class);
         } catch (Exception e) {
             Log.e(this.getClass().getSimpleName(), "Exception when trying to load patient", e);
         }
         return patient;
     }
 
-    private void getObservations(final String uuid, final String fieldName, final String fieldUuid) {
+    private void getObservations(final String patientUuid, final String fieldName, final String conceptUuid) {
         List<Observation> observations = new ArrayList<Observation>();
 
         try {
-            RestAssuredService service = Context.getService();
-            observations =
-                    service.getObjects(
-                            "patient:" + StringUtil.quote(uuid) + " AND concept:" + StringUtil.quote(fieldUuid),
-                            Observation.class);
+            Context context = ContextFactory.createContext(getApplicationContext().getResources());
+            RestAssuredService service = context.getInstance(RestAssuredService.class);
+            Filter patientFilter = FilterFactory.createFilter("patientUuid", patientUuid);
+            Filter conceptFilter = FilterFactory.createFilter("conceptUuid", conceptUuid);
+            observations = service.getObjects(
+                    Arrays.asList(patientFilter, conceptFilter), Observation.class);
         } catch (Exception e) {
             Log.e(this.getClass().getSimpleName(), "Exception when trying to load patient", e);
         }
@@ -127,7 +116,7 @@ public class ObservationChartActivity extends Activity {
         }
 
         for (Observation observation : observations) {
-            double d = Double.parseDouble(observation.getValueText());
+            double d = Double.parseDouble(observation.getValue());
             series.add(observation.getObservationDate().getTime(), d);
         }
     }

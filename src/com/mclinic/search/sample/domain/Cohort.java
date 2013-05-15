@@ -16,35 +16,49 @@
 
 package com.mclinic.search.sample.domain;
 
-public class Cohort {
+/**
+ * Cohort is a structure to hold collection of patients. Cohort will have a one to one connection with a Member object
+ * where we can find the uuid of patients in the cohort.
+ */
+public class Cohort extends OpenmrsSearchable {
 
     private String uuid;
 
     private String name;
 
-    private String json;
-
+    /**
+     * Get the uuid for the cohort.
+     *
+     * @return the uuid.
+     */
     public String getUuid() {
         return uuid;
     }
 
+    /**
+     * Set the uuid for the cohort.
+     *
+     * @param uuid the uuid to set.
+     */
     public void setUuid(final String uuid) {
         this.uuid = uuid;
     }
 
+    /**
+     * Get the name for the cohort.
+     *
+     * @return the name.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Set the name for the cohort.
+     *
+     * @param name the name to set.
+     */
     public void setName(final String name) {
         this.name = name;
-    }
-
-    public String getJson() {
-        return json;
-    }
-
-    public void setJson(final String json) {
-        this.json = json;
     }
 }

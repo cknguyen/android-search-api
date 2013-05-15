@@ -18,18 +18,10 @@ package com.mclinic.search.module;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
-import com.mclinic.search.sample.ServerConfigRegistry;
+import com.mclinic.search.api.logger.LogLevel;
+import com.mclinic.search.sample.Configuration;
 
 public class AndroidModule extends AbstractModule {
-
-    private ServerConfigRegistry registry;
-
-    public AndroidModule(final String server, final String username, final String password) {
-        registry = new ServerConfigRegistry();
-        registry.putEntry("server", server);
-        registry.putEntry("username", username);
-        registry.putEntry("password", password);
-    }
 
     @Override
     protected void configure() {
@@ -40,8 +32,11 @@ public class AndroidModule extends AbstractModule {
         // bind the default search key
         bind(String.class)
                 .annotatedWith(Names.named("configuration.lucene.document.key"))
-                .toInstance("name");
+                .toInstance("uuid");
 
-        bind(ServerConfigRegistry.class).toInstance(registry);
+        Configuration configuration = new Configuration();
+        bind(Configuration.class).toInstance(configuration);
+
+        bind(LogLevel.class).toInstance(LogLevel.DEBUG);
     }
 }

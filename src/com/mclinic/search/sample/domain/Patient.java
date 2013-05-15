@@ -13,24 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mclinic.search.sample.domain;
 
 import java.util.Date;
 
-public class Patient {
+public class Patient extends OpenmrsSearchable {
 
     private String uuid;
 
-    private String name;
+    private String givenName;
+
+    private String middleName;
+
+    private String familyName;
 
     private String identifier;
 
     private String gender;
 
     private Date birthdate;
-
-    private String json;
 
     /**
      * Get the patient internal uuid
@@ -51,21 +52,57 @@ public class Patient {
     }
 
     /**
-     * Get the patient name
+     * Get the given name for the patient.
      *
-     * @return the patient name
+     * @return the given name for the patient.
      */
-    public String getName() {
-        return name;
+    public String getGivenName() {
+        return givenName;
     }
 
     /**
-     * Set the patient name
+     * Set the given name for the patient.
      *
-     * @param name the patient name
+     * @param givenName the given name for the patient.
      */
-    public void setName(final String name) {
-        this.name = name;
+    public void setGivenName(final String givenName) {
+        this.givenName = givenName;
+    }
+
+    /**
+     * Get the middle name for the patient.
+     *
+     * @return the middle name for the patient.
+     */
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    /**
+     * Set the middle name for the patient.
+     *
+     * @param middleName the middle name for the patient.
+     */
+    public void setMiddleName(final String middleName) {
+        this.middleName = middleName;
+    }
+
+    /**
+     * Get the family name for the patient.
+     *
+     * @return the family name for the patient.
+     */
+    public String getFamilyName() {
+        return familyName;
+    }
+
+    /**
+     * Set the family name for the patient.
+     *
+     * @param familyName the family name for the patient.
+     */
+    public void setFamilyName(final String familyName) {
+        this.familyName = familyName;
     }
 
     /**
@@ -120,23 +157,5 @@ public class Patient {
      */
     public void setBirthdate(final Date birthdate) {
         this.birthdate = birthdate;
-    }
-
-    /**
-     * Get the underlying json representation for the patient
-     *
-     * @return the json representation
-     */
-    public String getJson() {
-        return json;
-    }
-
-    /**
-     * Set the underlying json representation for the patient
-     *
-     * @param json the json representation
-     */
-    public void setJson(final String json) {
-        this.json = json;
     }
 }

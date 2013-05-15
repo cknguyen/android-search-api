@@ -1,23 +1,4 @@
-/**
- * Copyright 2012 Muzima Team
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.mclinic.search.adapter;
-
-import java.text.SimpleDateFormat;
-import java.util.List;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -28,9 +9,12 @@ import android.widget.TextView;
 import com.mclinic.search.sample.domain.Observation;
 import com.nribeka.search.R;
 
+import java.text.SimpleDateFormat;
+import java.util.List;
+
 public class EncounterAdapter extends ArrayAdapter<Observation> {
 
-    private SimpleDateFormat mDateFormat = new SimpleDateFormat("MMM dd, yyyy");
+    private SimpleDateFormat mDateFormat = new SimpleDateFormat("dd/MMM/yyyy");
 
     public EncounterAdapter(Context context, int textViewResourceId, List<Observation> items) {
         super(context, textViewResourceId, items);
@@ -47,7 +31,7 @@ public class EncounterAdapter extends ArrayAdapter<Observation> {
         if (obs != null) {
 
             TextView textView = (TextView) v.findViewById(R.id.value_text);
-            textView.setText(obs.getValueText());
+            textView.setText(obs.getValue());
 
             textView = (TextView) v.findViewById(R.id.encounterdate_text);
             textView.setText(mDateFormat.format(obs.getObservationDate()));
